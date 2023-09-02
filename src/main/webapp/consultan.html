@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consultants - Job Consultancy</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+
+        .crud-card {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            margin: 20px;
+            padding: 20px;
+            width: 400px;
+            text-align: center;
+        }
+        .crud-card h2 {
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="tel"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        .form-group button {
+            background-color: #007bff;
+            border: none;
+            border-radius: 3px;
+            color: #fff;
+            cursor: pointer;
+            padding: 10px 20px;
+        }
+        .consultant-list {
+            text-align: left;
+            margin-top: 20px;
+        }
+        .consultant-item {
+            margin-bottom: 10px;
+        }
+        .consultant-item h3 {
+            font-size: 18px;
+        }
+        .consultant-item p {
+            margin: 0;
+        }
+
+    .navbar {
+        background-color: #007bff;
+        padding: 10px 0;
+    }
+    .navbar-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+    .logo {
+        color: #fff;
+        font-size: 24px;
+        font-weight: bold;
+    }
+    .nav-links {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+    }
+    .nav-links li {
+        margin-right: 20px;
+    }
+    .nav-links a {
+        text-decoration: none;
+        color: #fff;
+        font-weight: bold;
+    }
+    .consultant-card {
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        margin: 20px;
+        padding: 20px;
+        width: 400px;
+        text-align: center;
+    }
+    .consultant-card img {
+        max-width: 100%;
+        border-radius: 50%;
+    }
+    .consultant-card h3 {
+        color: #007bff;
+        margin-top: 10px;
+    }
+    .consultant-card p {
+        margin: 0;
+        padding: 0;
+    }
+  </style>
+</head>
+<body>
+<div class="navbar">
+  <div class="navbar-container">
+    <div class="logo">Job Consultancy</div>
+    <ul class="nav-links">
+      <li><a href="#">Home</a></li>
+      <li><a href="#appointment">Appointment</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </div>
+</div>
+
+<div class="crud-card">
+  <h2>Consultant Details</h2>
+
+  <!-- Form for Creating/Updating Consultant Details -->
+  <form action="#" method="post">
+    <div class="form-group">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required>
+    </div>
+    <div class="form-group">
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required>
+    </div>
+    <div class="form-group">
+      <label for="phone">Phone:</label>
+      <input type="tel" id="phone" name="phone" required>
+    </div>
+    <button type="submit">Save</button>
+  </form>
+</div>
+
+<!-- List of Consultants with CRUD Operations -->
+<div class="consultant-list">
+  <div class="consultant-item">
+    <h3>Consultant 1</h3>
+    <p>Email: consultant1@example.com</p>
+    <p>Phone: +1 123-456-7890</p>
+    <button>Edit</button>
+    <button>Delete</button>
+  </div>
+
+  <div class="consultant-item">
+    <h3>Consultant 2</h3>
+    <p>Email: consultant2@example.com</p>
+    <p>Phone: +1 987-654-3210</p>
+    <button>Edit</button>
+    <button>Delete</button>
+  </div>
+
+  <!-- Add more consultant items as needed -->
+</div>
+
+<div class="consultant-card">
+  <img src="consultant1.jpg" alt="Consultant 1">
+  <h3>John Doe</h3>
+  <p>Consultant</p>
+  <p>Email: john.doe@example.com</p>
+  <p>Phone: +1 123-456-7890</p>
+</div>
+
+<div class="consultant-card">
+  <img src="consultant2.jpg" alt="Consultant 2">
+  <h3>Jane Smith</h3>
+  <p>Consultant</p>
+  <p>Email: jane.smith@example.com</p>
+  <p>Phone: +1 987-654-3210</p>
+</div>
+
+<!-- Add more consultant cards as needed -->
+
+<div class="dashboard-card">
+  <h2>Consultant Details</h2>
+
+  <!-- Consultant CRUD Form -->
+  <form id="consultant-form">
+    <input type="hidden" id="consultant-id">
+    <label for="consultant-name">Name:</label>
+    <input type="text" id="consultant-name" required>
+    <label for="consultant-email">Email:</label>
+    <input type="email" id="consultant-email" required>
+    <label for="consultant-phone">Phone:</label>
+    <input type="tel" id="consultant-phone" required>
+    <button type="submit">Save</button>
+  </form>
+
+  <!-- Consultant Details Table -->
+  <div class="table-container">
+    <table class="data-table">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Actions</th>
+      </tr>
+      </thead>
+      <tbody id="consultant-list">
+      <!-- Consultant details will be populated here -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="dashboard-card" id="appointment">
+  <h2>Appointments Scheduled</h2>
+
+  <!-- Appointments Table -->
+  <div class="table-container">
+    <table class="data-table">
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Consultant Name</th>
+        <th>Job Seeker Name</th>
+        <th>Date</th>
+        <th>Time</th>
+      </tr>
+      </thead>
+      <tbody id="appointment-list">
+      <!-- Appointment details will be populated here -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+
+</body>
+</html>
