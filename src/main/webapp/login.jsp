@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
+<%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false"%>
+<html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -55,15 +55,16 @@
   </style>
 </head>
 <body>
+<jsp:include page="login.jsp"></jsp:include>
 <div class="login-container">
   <h2>Login</h2>
-  <form action="login_process.php" method="post">
+  <form action="LoginServlet" method="post">
     <input type="text" id="username" name="username" placeholder="Username" required>
     <input type="password" id="password" name="password" placeholder="Password" required>
     <button type="submit">Login</button>
     <br/>
     <hr/>
-    <button class="btn-signup"><a class="login-link" href="signup.html">Sign Up</a></button>
+    <button class="btn-signup"><a class="login-link" href="signup.jsp">Sign Up</a></button>
   </form>
 </div>
 </body>

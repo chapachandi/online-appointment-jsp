@@ -61,9 +61,10 @@
     </style>
 </head>
 <body>
+<jsp:include page="signup.jsp"></jsp:include>
 <div class="container">
     <h1>Sign Up</h1>
-    <form action="#" method="post">
+    <form action="RegistrationServlet" method="post">
         <div class="form-group">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
@@ -80,7 +81,7 @@
             <button type="submit">Sign Up</button>
         </div>
     </form>
-    <p>Already have an account? <a class="login-link" href="login.html">Log in</a></p>
+    <p>Already have an account? <a class="login-link" href="login.jsp">Log in</a></p>
 </div>
 </body>
 </html>
