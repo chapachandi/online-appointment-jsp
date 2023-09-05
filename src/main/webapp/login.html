@@ -1,4 +1,3 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false"%>
 <html>
 <head>
   <meta charset="UTF-8">
@@ -36,7 +35,7 @@
         border-radius: 3px;
     }
     .login-container button {
-        width: 100%;
+        width: 86%;
         padding: 10px;
         background-color: #007bff;
         border: none;
@@ -48,23 +47,35 @@
         background: white !important;
         color: blue !important;
     }
-     .login-link {
+    .login-link {
             color: #007bff;
             text-decoration: none;
-        }
+    }
+    select{
+      width: 86%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
-<jsp:include page="login.jsp"></jsp:include>
 <div class="login-container">
   <h2>Login</h2>
-  <form action="LoginServlet" method="post">
+  <form action="" method="POST">
     <input type="text" id="username" name="username" placeholder="Username" required>
     <input type="password" id="password" name="password" placeholder="Password" required>
+      <select id="userType" name="userType"  placeholder="Select User Type" required>
+        <option value="user">User</option>
+        <option value="consultant">Consultant</option>
+        <option value="admin">Admin</option>
+      </select>
+    <br/>
     <button type="submit">Login</button>
     <br/>
     <hr/>
-    <button class="btn-signup"><a class="login-link" href="signup.jsp">Sign Up</a></button>
+    <button class="btn-signup"><a class="login-link" href="signup.html">Sign Up</a></button>
   </form>
 </div>
 </body>

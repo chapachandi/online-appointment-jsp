@@ -7,14 +7,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/ConsultantServlet")
+@WebServlet("/consultants")
 public class ConsultantServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    private ConsultantDao consultantDao;
+    private ConsultantDAO consultantDAO;
 
     public void init() {
-        consultantDao = new ConsultantDao();
+        // Initialize the ConsultantDAO with your DBConnectionFactory (replace with your implementation)
+        consultantDAO = new ConsultantDAO(DBConnectionFactory.getDAOFactory(DAOFactory.MYSQL));
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -22,7 +23,7 @@ public class ConsultantServlet extends HttpServlet {
         String action = request.getParameter("action");
 
         if (action == null) {
-            action = "list"; // Default action: List consultants
+            action = "list";
         }
 
         switch (action) {
@@ -30,19 +31,74 @@ public class ConsultantServlet extends HttpServlet {
                 listConsultants(request, response);
                 break;
             case "add":
-                // Show the form for adding a new consultant
-                request.getRequestDispatcher("add-consultant.jsp").forward(request, response);
+                showAddForm(request, response);
                 break;
             case "edit":
-                // Show the form for editing an existing consultant
-                editConsultant(request, response);
+                showEditForm(request, response);
                 break;
             case "delete":
-                // Delete an existing consultant
                 deleteConsultant(request, response);
+                break;
+            case "view":
+                viewConsultant(request, response);
                 break;
             default:
                 listConsultants(request, response);
+                break;
+        }
+    }
+
+    private void listConsultants(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        List<ConsultantEntity> consultantsList = consultantDAO.getAllConsultants();
+        request.setAttribute("consultantsList", consultantsList);
+        request.getRequestDispatcher("/consultant-list.jsp").forward(request, response);
+    }
+
+    private void showAddForm(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // Display the form for adding a new consultant (you can create a JSP for this)
+        request.getRequestDispatcher("/consultant-add-form.jsp").forward(request, response);
+    }
+
+    private void showEditForm(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        Long consultantId = Long.parseLong(request.getParameter("consultantId"));
+        ConsultantEntity consultant = consultantDAO.getConsultantById(consultantId);
+
+        if (consultant != null) {
+            request.setAttribute("consultant", consultant);
+            request.getRequestDispatcher("/consultant-edit-form.jsp").forward(request, response);
+        } else {
+            // Handle consultant not found
+            response.sendRedirect(request.getContextPath() + "/consultants?action=list&editError=true");
+        }
+    }
+
+    private void deleteConsultant(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        Long consultantId = Long.parseLong(request.getParameter("consultantId"));
+        boolean deleted = consultantDAO.deleteConsultant(consultantId);
+
+        if (deleted) {
+            response.sendRedirect(request.getContextPath() + "/consultants?action=list");
+        } else {
+            // Handle deletion failure
+            response.sendRedirect(request.getContextPath() + "/consultants?action=list&deleteError=true");
+        }
+    }
+
+    private void viewConsultant(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        Long consultantId = Long.parseLong(request.getParameter("consultantId"));
+        ConsultantEntity consultant = consultantDAO.getConsultantById(consultantId);
+
+        if (consultant != null) {
+            request.setAttribute("consultant", consultant);
+            request.getRequestDispatcher("/consultant-view.jsp").forward(request, response);
+        } else {
+            // Handle consultant not found
+            response.sendRedirect(request.getContextPath() + "/consultants?action=list&viewError=true");
         }
     }
 
@@ -50,98 +106,79 @@ public class ConsultantServlet extends HttpServlet {
             throws ServletException, IOException {
         String action = request.getParameter("action");
 
-        if (action == null) {
-            action = "list"; // Default action: List consultants
+        if (action != null) {
+            switch (action) {
+                case "add":
+                    addConsultant(request, response);
+                    break;
+                case "edit":
+                    editConsultant(request, response);
+                    break;
+                default:
+                    listConsultants(request, response);
+                    break;
+            }
         }
-
-        switch (action) {
-            case "add":
-                addConsultant(request, response);
-                break;
-            case "update":
-                updateConsultant(request, response);
-                break;
-            default:
-                listConsultants(request, response);
-        }
-    }
-
-    private void listConsultants(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        List<Consultant> consultants = consultantDao.getAllConsultants();
-        request.setAttribute("consultants", consultants);
-        request.getRequestDispatcher("list-consultants.jsp").forward(request, response);
     }
 
     private void addConsultant(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Retrieve request parameters to create a new Consultant entity
-        String firstName = request.getParameter("firstName");
-        String lastName = request.getParameter("lastName");
+        // Retrieve form data and create a new ConsultantEntity
+        String name = request.getParameter("name");
         String email = request.getParameter("email");
         String phoneNumber = request.getParameter("phoneNumber");
-        String expertise = request.getParameter("expertise");
+        String userType = request.getParameter("userType");
+        String jobType = request.getParameter("jobType");
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
 
-        Consultant newConsultant = new Consultant(firstName, lastName, email, phoneNumber, expertise);
-        consultantDao.createConsultant(newConsultant);
+        ConsultantEntity consultant = new ConsultantEntity(name, email, phoneNumber, userType, jobType, username, password);
 
-        // Redirect to the list page after adding
-        response.sendRedirect(request.getContextPath() + "/ConsultantServlet?action=list");
+        boolean added = consultantDAO.addConsultant(consultant);
+
+        if (added) {
+            response.sendRedirect(request.getContextPath() + "/consultants?action=list");
+        } else {
+            // Handle addition failure
+            response.sendRedirect(request.getContextPath() + "/consultants?action=list&addError=true");
+        }
     }
 
     private void editConsultant(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Retrieve the consultant ID to be edited from the request parameter
-        Long consultantId = Long.parseLong(request.getParameter("id"));
-        Consultant consultant = consultantDao.getConsultantById(consultantId);
+        Long consultantId = Long.parseLong(request.getParameter("consultantId"));
+        ConsultantEntity consultant = consultantDAO.getConsultantById(consultantId);
 
-        // Set the consultant as an attribute for the edit page
-        request.setAttribute("consultant", consultant);
+        if (consultant != null) {
+            // Retrieve form data for editing
+            String name = request.getParameter("name");
+            String email = request.getParameter("email");
+            String phoneNumber = request.getParameter("phoneNumber");
+            String userType = request.getParameter("userType");
+            String jobType = request.getParameter("jobType");
+            String username = request.getParameter("username");
+            String password = request.getParameter("password");
 
-        // Forward to the edit page
-        request.getRequestDispatcher("edit-consultant.jsp").forward(request, response);
-    }
+            // Update the consultant entity
+            consultant.setName(name);
+            consultant.setEmail(email);
+            consultant.setPhoneNumber(phoneNumber);
+            consultant.setUserType(userType);
+            consultant.setJobType(jobType);
+            consultant.setUsername(username);
+            consultant.setPassword(password);
 
-    private void updateConsultant(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        // Retrieve request parameters for updating the consultant
-        Long consultantId = Long.parseLong(request.getParameter("id"));
-        String firstName = request.getParameter("firstName");
-        String lastName = request.getParameter("lastName");
-        String email = request.getParameter("email");
-        String phoneNumber = request.getParameter("phoneNumber");
-        String expertise = request.getParameter("expertise");
+            boolean updated = consultantDAO.updateConsultant(consultant);
 
-        // Retrieve the existing consultant from the database
-        Consultant consultant = consultantDao.getConsultantById(consultantId);
-
-        // Update the consultant's information
-        consultant.setFirstName(firstName);
-        consultant.setLastName(lastName);
-        consultant.setEmail(email);
-        consultant.setPhoneNumber(phoneNumber);
-        consultant.setExpertise(expertise);
-
-        // Save the updated consultant to the database
-        consultantDao.updateConsultant(consultant);
-
-        // Redirect to the list page after updating
-        response.sendRedirect(request.getContextPath() + "/ConsultantServlet?action=list");
-    }
-
-    private void deleteConsultant(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        // Retrieve the consultant ID to be deleted from the request parameter
-        Long consultantId = Long.parseLong(request.getParameter("id"));
-
-        // Delete the consultant from the database
-        consultantDao.deleteConsultant(consultantId);
-
-        // Redirect to the list page after deleting
-        response.sendRedirect(request.getContextPath() + "/ConsultantServlet?action=list");
-    }
-
-    public void destroy() {
-        consultantDao.close();
+            if (updated) {
+                response.sendRedirect(request.getContextPath() + "/consultants?action=list");
+            } else {
+                // Handle update failure
+                response.sendRedirect(request.getContextPath() + "/consultants?action=edit&consultantId=" + consultantId + "&editError=true");
+            }
+        } else {
+            // Handle consultant not found
+            response.sendRedirect(request.getContextPath() + "/consultants?action=list&editError=true");
+        }
     }
 }
